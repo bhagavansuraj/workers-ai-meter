@@ -71,7 +71,8 @@ export class AiShedError extends Error {
   }
 }
 
-const SAFE_ERROR_NAME_RE = /^[A-Za-z][A-Za-z0-9_.-]{0,63}$/;
+// A JS class name: an identifier, no `-` or `.`, so a JWT or API key can't pass as one.
+const SAFE_ERROR_NAME_RE = /^[A-Za-z_$][A-Za-z0-9_$]{0,63}$/;
 
 /** An error's class name if it's a safe token, else undefined. Never the message or the stack. */
 export function safeErrorName(error: unknown): string | undefined {
