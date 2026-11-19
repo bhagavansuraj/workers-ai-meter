@@ -4,9 +4,6 @@ A cost ledger, a spend cap, and a lint rule for **Cloudflare Workers AI** and th
 Gateway. Every model call is metered, priced in integer micros at write time, and attributable
 to whatever unit of your business you care about. It's built so that it's hard to bypass.
 
-I extracted this from a production Workers app where AI was the product: a résumé parser,
-summaries, transcription. The question it answers is *"what does one customer cost us in AI,
-and what happens to the product when the bill spikes?"*
 
 ```ts
 const summary = await meter.run(
@@ -80,20 +77,6 @@ direct access, `c.env.AI`, computed `["AI"]`, single- and multi-hop aliases, des
 untyped parameter, or the binding passed through an object, gets past it. That's what
 `units_source` and AI Gateway reconciliation are for.
 
-## Workers AI footguns this code works around
-
-- **The binding needs its receiver.** `const run = env.AI.run; run(...)` throws `TypeError`
-  in production and passes against every plain-object mock. A mixed-mode `wrangler dev` smoke
-  test caught it. The regression test's stub now rejects unbound calls the way the real binding
-  does.
-- **`env.AI.run()` rejects provider-prefixed model ids** (`AiGatewayError 7003`). Third-party
-  models go through `env.AI.gateway(id).run({ provider, endpoint, query })`, which returns the
-  provider's native response shape. That's why there's a separate `runGateway()`.
-- **The two Whisper variants take incompatible inputs.** `@cf/openai/whisper` takes `number[]`;
-  `whisper-large-v3-turbo` takes a base64 string. Each rejects the other's shape (`AiError
-  5006`). Base64 also avoids an ~8x memory blow-up that can OOM a 128 MiB isolate.
-- **Gateway logs keep request bodies.** Pass `collectLog: false` for operations whose prompts
-  carry user content.
 
 ## Use it
 
