@@ -1,0 +1,29 @@
+{
+  "name": "workers-ai-meter",
+  "version": "1.0.0",
+  "description": "A cost ledger, spend cap and lint rule for Cloudflare Workers AI: every model call metered, priced in integer micros, and attributable.",
+  "license": "MIT",
+  "author": "Suraj Bhagavan",
+  "repository": "github:bhagavansuraj/workers-ai-meter",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./eslint": "./eslint/no-unmetered-ai-run.mjs"
+  },
+  "files": ["src", "eslint", "migrations"],
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm test"
+  },
+  "keywords": ["cloudflare", "workers-ai", "d1", "cost", "llm", "eslint-plugin"],
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "0.6.16",
+    "@cloudflare/workers-types": "4.20260629.1",
+    "@typescript-eslint/parser": "8.62.0",
+    "eslint": "9.39.4",
+    "typescript": "5.9.3",
+    "vitest": "2.1.8",
+    "wrangler": "4.86.0"
+  }
+}
